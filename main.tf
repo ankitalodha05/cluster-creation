@@ -54,11 +54,9 @@ module "eks" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  depends_on = [aws_eks_cluster.my_eks_cluster]
-  name       = aws_eks_cluster.my_eks_cluster.name
+  name = module.eks.cluster_id
 }
 
-
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
+  name = module.eks.cluster_id
 }
