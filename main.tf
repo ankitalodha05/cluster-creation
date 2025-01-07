@@ -2,7 +2,7 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "eks_cluster_vpc1"
+  name = "eks_cluster_vpc"
   cidr = var.vpc_cidr
 
   azs             = data.aws_availability_zones.azs.names
