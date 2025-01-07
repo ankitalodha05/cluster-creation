@@ -52,20 +52,15 @@ module "eks" {
   }
 }
 
-# Introduce a delay to ensure cluster readiness
-resource "time_sleep" "wait_for_eks" {
-  depends_on = [module.eks]
-  create_duration = "2m"
-}
-
-# Data Source: EKS Cluster
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
-  depends_on = [time_sleep.wait_for_eks]
+
+  depends_on = [module.eks]
 }
 
-# Data Source: EKS Cluster Auth
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
-  depends_on = [time_sleep.wait_for_eks]
+
+  depends_on = [module.eks]
 }
+
