@@ -52,29 +52,20 @@ module "eks" {
   }
 }
 
+# Introduce a delay to ensure cluster readiness
+resource "time_sleep" "wait_for_eks" {
+  depends_on = [module.eks]
+  create_duration = "2m"
+}
+
 # Data Source: EKS Cluster
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
+  depends_on = [time_sleep.wait_for_eks]
 }
 
-# Data Source: EKS Cluster Authentication
+# Data Source: EKS Cluster Auth
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
-}
-
-# Outputs
-output "vpc_id" {
-  value = module.vpc.vpc_id
-}
-
-output "eks_cluster_name" {
-  value = module.eks.cluster_name
-}
-
-output "eks_cluster_endpoint" {
-  value = data.aws_eks_cluster.cluster.endpoint
-}
-
-output "eks_cluster_certificate" {
-  value = data.aws_eks_cluster.cluster.certificate_authority[0].data
+  depends_on = [time_sleep.wait_for_eks]
 }
